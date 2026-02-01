@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:chewie/chewie.dart';
 import 'package:video_player/video_player.dart';
+import 'dart:developer' as developer;
 import '../models/movie_part_model.dart';
 
 class VideoStreamingScreen extends StatefulWidget {
@@ -41,9 +42,13 @@ class _VideoStreamingScreenState extends State<VideoStreamingScreen> {
         _errorMessage = null;
       });
 
-      // Create video player controller with the stream URL
+      // Create video player controller with the direct video URL
+      final directUrl = widget.moviePart.secureVideoUrl;
+      developer.log('VideoStreamingScreen - Original stream URL: ${widget.moviePart.streamUrl}');
+      developer.log('VideoStreamingScreen - Direct video URL: $directUrl');
+      
       _videoPlayerController = VideoPlayerController.networkUrl(
-        Uri.parse(widget.moviePart.streamUrl),
+        Uri.parse(directUrl),
       );
 
       // Initialize the video player

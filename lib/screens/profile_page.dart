@@ -24,12 +24,7 @@ class _ProfilePageState extends State<ProfilePage> {
 
   Future<void> _loadUserProfile() async {
     try {
-      final currentUser = await AuthService.getCurrentUser();
-      if (currentUser == null) {
-        throw Exception('No user logged in');
-      }
-
-      final response = await UserService.getUserProfile(currentUser.userEmail.hashCode);
+      final response = await UserService.getCurrentUser();
       
       setState(() {
         user = response.user;
@@ -118,7 +113,7 @@ class _ProfilePageState extends State<ProfilePage> {
       });
 
       final response = await UserService.updateUserProfile(
-        user!.userEmail.hashCode, // Using email hash as ID since User model doesn't have id
+        user!.id, // Use actual user ID
         username: username,
         useremail: email,
         userimagedp: imageUrl,
@@ -191,7 +186,7 @@ class _ProfilePageState extends State<ProfilePage> {
       });
 
       final response = await UserService.deleteUserAccount(
-        user!.userEmail.hashCode, // Using email hash as ID
+        user!.id, // Use actual user ID
       );
 
       if (response.success) {

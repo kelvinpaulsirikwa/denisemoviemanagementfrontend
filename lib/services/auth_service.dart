@@ -40,11 +40,13 @@ class AuthService {
         
         // Create user with token from the response
         final user = User(
+          id: userData['user']['id'] ?? 0,
           userEmail: userData['user']['useremail'],
           userName: userData['user']['username'],
           userImageDp: userData['user']['userimagedp'],
           dateTimeStamp: userData['user']['date_timestample'],
           createdAt: userData['user']['createdat'],
+          updatedAt: userData['user']['updated_at'] ?? userData['user']['createdat'],
           token: userData['token'], // Save the Bearer token
         );
         

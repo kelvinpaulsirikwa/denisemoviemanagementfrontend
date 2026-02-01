@@ -1,3 +1,5 @@
+import '../config/api_config.dart';
+
 class MoviePart {
   final int id;
   final String? title;
@@ -55,6 +57,23 @@ class MoviePart {
       return title!;
     }
     return 'Part $partNumber';
+  }
+
+  // Ensure stream URL always uses HTTPS
+  String get secureStreamUrl {
+    if (streamUrl.startsWith('http://')) {
+      return streamUrl.replaceFirst('http://', 'https://');
+    }
+    return streamUrl;
+  }
+
+  // Get direct video URL with HTTPS
+  String get secureVideoUrl {
+    var directUrl = '${ApiConfig.storageUrl}/${videoUrl}';
+    if (directUrl.startsWith('http://')) {
+      directUrl = directUrl.replaceFirst('http://', 'https://');
+    }
+    return directUrl;
   }
 }
 

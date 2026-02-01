@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:chewie/chewie.dart';
 import 'package:video_player/video_player.dart';
+import 'dart:developer' as developer;
 import '../models/movie_model.dart';
 import '../models/movie_part_model.dart';
 import '../models/trailer_model.dart';
@@ -153,6 +154,13 @@ class _MovieDetailPageState extends State<MovieDetailPage> {
         for (final line in lines) {
           if (line.isNotEmpty && !line.startsWith('#')) {
             videoUrl = line.startsWith('http') ? line : '${ApiConfig.baseUrl}/stream/${widget.movie.id}/$line';
+            // Ensure HTTPS
+            if (videoUrl.startsWith('http://')) {
+              final originalUrl = videoUrl;
+              videoUrl = videoUrl.replaceFirst('http://', 'https://');
+              developer.log('HLS URL Conversion: $originalUrl -> $videoUrl');
+            }
+            developer.log('Final HLS Video URL: $videoUrl');
             break;
           }
         }
@@ -161,8 +169,16 @@ class _MovieDetailPageState extends State<MovieDetailPage> {
         }
         videoPlayerController = VideoPlayerController.networkUrl(Uri.parse(videoUrl));
       } else {
+        // Ensure HTTPS for direct video URL
+        String secureVideoUrl = _directVideoUrl!;
+        if (secureVideoUrl.startsWith('http://')) {
+          final originalUrl = secureVideoUrl;
+          secureVideoUrl = secureVideoUrl.replaceFirst('http://', 'https://');
+          developer.log('Direct URL Conversion: $originalUrl -> $secureVideoUrl');
+        }
+        developer.log('Final Direct Video URL: $secureVideoUrl');
         videoPlayerController = VideoPlayerController.networkUrl(
-          Uri.parse(_directVideoUrl!),
+          Uri.parse(secureVideoUrl),
         );
       }
 

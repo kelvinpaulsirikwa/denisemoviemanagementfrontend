@@ -1,5 +1,5 @@
 class ApiConfig {
-  static const String domain='http://10.0.2.2:8006';
+  static const String domain='https://1ffffb2726d9.ngrok-free.app';
   static const String baseUrl = '$domain/api';
   static const String publicUrl = '$domain';
   static const String loginEndpoint = '$baseUrl/login';

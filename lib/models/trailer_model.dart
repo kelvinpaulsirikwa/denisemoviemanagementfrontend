@@ -1,3 +1,5 @@
+import '../config/api_config.dart';
+
 class MovieTrailer {
   final int movieId;
   final String movieTitle;
@@ -55,5 +57,14 @@ class MovieTrailer {
     if (fileSize < 1024 * 1024) return '${(fileSize / 1024).toStringAsFixed(1)} KB';
     if (fileSize < 1024 * 1024 * 1024) return '${(fileSize / (1024 * 1024)).toStringAsFixed(1)} MB';
     return '${(fileSize / (1024 * 1024 * 1024)).toStringAsFixed(1)} GB';
+  }
+
+  // Get direct trailer URL with HTTPS
+  String get secureTrailerUrl {
+    var directUrl = '${ApiConfig.storageUrl}/${trailerUrl}';
+    if (directUrl.startsWith('http://')) {
+      directUrl = directUrl.replaceFirst('http://', 'https://');
+    }
+    return directUrl;
   }
 }

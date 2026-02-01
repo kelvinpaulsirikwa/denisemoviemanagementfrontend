@@ -16,6 +16,30 @@ class UserService {
     
     return headers;
   }
+
+  // Get current authenticated user details
+  static Future<UserProfileResponse> getCurrentUser() async {
+    final uri = Uri.parse('${ApiConfig.baseUrl}/user');
+    final headers = await _getAuthHeaders();
+
+    ApiLogger.logRequest('GET', uri.toString(), headers: headers);
+
+    try {
+      final response = await http.get(uri, headers: headers);
+      ApiLogger.logResponse(response);
+
+      if (response.statusCode == 200) {
+        return UserProfileResponse.fromJson(jsonDecode(response.body));
+      } else if (response.statusCode == 401) {
+        throw Exception('Unauthenticated');
+      } else {
+        throw Exception('Failed to load user profile: ${response.statusCode}');
+      }
+    } catch (e) {
+      ApiLogger.logError('GET', uri.toString(), e);
+      rethrow;
+    }
+  }
   static Future<UserProfileResponse> getUserProfile(int userId) async {
     final uri = Uri.parse('${ApiConfig.baseUrl}/users/$userId');
     final headers = await _getAuthHeaders();

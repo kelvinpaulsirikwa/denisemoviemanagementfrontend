@@ -76,10 +76,12 @@ class _HomePageState extends State<HomePage> {
       developer.log('- Movies: ${movies.length}');
     } catch (e) {
       developer.log('Error fetching homepage data: $e');
-      setState(() {
-        errorMessage = 'Failed to load data: ${e.toString()}';
-        isLoading = false;
-      });
+      if (mounted) {
+        setState(() {
+          errorMessage = 'Failed to load data: ${e.toString()}';
+          isLoading = false;
+        });
+      }
     }
   }
 

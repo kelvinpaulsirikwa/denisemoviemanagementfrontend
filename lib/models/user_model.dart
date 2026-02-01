@@ -1,38 +1,46 @@
 class User {
+  final int id;
   final String userEmail;
   final String userName;
   final String? userImageDp;
   final String dateTimeStamp;
   final String createdAt;
+  final String updatedAt;
   final String? token;
 
   User({
+    required this.id,
     required this.userEmail,
     required this.userName,
     this.userImageDp,
     required this.dateTimeStamp,
     required this.createdAt,
+    required this.updatedAt,
     this.token,
   });
 
   factory User.fromJson(Map<String, dynamic> json) {
     return User(
+      id: json['id'] ?? 0,
       userEmail: json['useremail'] ?? '',
       userName: json['username'] ?? '',
       userImageDp: json['userimagedp'],
       dateTimeStamp: json['date_timestample'] ?? '',
-      createdAt: json['createdat'] ?? '',
+      createdAt: json['createdat'] ?? json['created_at'] ?? '',
+      updatedAt: json['updated_at'] ?? '',
       token: json['token'],
     );
   }
 
   Map<String, dynamic> toJson() {
     return {
+      'id': id,
       'useremail': userEmail,
       'username': userName,
       'userimagedp': userImageDp,
       'date_timestample': dateTimeStamp,
       'createdat': createdAt,
+      'updated_at': updatedAt,
       'token': token,
     };
   }
@@ -49,8 +57,8 @@ class UserProfileResponse {
 
   factory UserProfileResponse.fromJson(Map<String, dynamic> json) {
     return UserProfileResponse(
-      success: json['success'] ?? false,
-      user: User.fromJson(json['data'] ?? {}),
+      success: true, // API returns 200 so it's successful
+      user: User.fromJson(json), // User data is directly in the response
     );
   }
 }

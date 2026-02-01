@@ -11,6 +11,16 @@ import '../utils/api_logger.dart';
 import '../services/auth_service.dart';
 
 class MovieService {
+  // Utility function to ensure HTTPS URLs
+  static String ensureHttps(String url) {
+    if (url.startsWith('http://')) {
+      final httpsUrl = url.replaceFirst('http://', 'https://');
+      developer.log('Converted HTTP to HTTPS: $url -> $httpsUrl');
+      return httpsUrl;
+    }
+    return url;
+  }
+
   static Future<Map<String, String>> _getAuthHeaders() async {
     final user = await AuthService.getCurrentUser();
     final headers = {'Content-Type': 'application/json'};
@@ -307,7 +317,7 @@ class MovieService {
 
     try {
       // Just return the direct video URL with auth headers
-      final videoUrl = '${ApiConfig.baseUrl}/stream/$id/video';
+      var videoUrl = ensureHttps('${ApiConfig.baseUrl}/stream/$id/video');
       
       // Test if the video exists
       final response = await http.head(uri, headers: headers);
@@ -337,7 +347,18 @@ class MovieService {
       ApiLogger.logResponse(response);
 
       if (response.statusCode == 200) {
-        return response.body; // Return HLS playlist content
+        var playlistContent = response.body;
+        
+        // Convert all HTTP URLs in the playlist to HTTPS
+        final lines = playlistContent.split('\n');
+        final convertedLines = lines.map((line) {
+          if (line.isNotEmpty && !line.startsWith('#') && line.startsWith('http://')) {
+            return ensureHttps(line);
+          }
+          return line;
+        });
+        
+        return convertedLines.join('\n');
       } else if (response.statusCode == 404) {
         throw Exception('HLS playlist not found');
       } else {
